@@ -1,4 +1,5 @@
 const { Client, GatewayIntentBits, EmbedBuilder, Partials } = require('discord.js');
+const keep_alive = require('./keep_alive.js');
 require('dotenv').config();
 const translate = require('google-translate-api-x');
 
