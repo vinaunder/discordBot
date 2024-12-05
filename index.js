@@ -253,7 +253,7 @@ client.on('interactionCreate', async (interaction) => {
             await interaction.reply({ content: 'There was an error sending the alert.', ephemeral: true });
         }
     } else if (commandName === 'create_event') {
-        const requiredRoleName = 'Event Organizer'; // Substitua pelo nome do cargo necessário
+        const requiredRoleName = 'R4/5'; // Substitua pelo nome do cargo necessário
         const memberRoles = interaction.member.roles.cache;
 
         // Verifica se o usuário possui o cargo necessário
