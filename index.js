@@ -283,7 +283,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
         const traducao = await traduzirTexto(textoOriginal, idiomaDestino);
         // Responde ao autor do comando informando que foi enviado
-        await interaction.reply({ content: traducao, ephemeral: true });
+        await reaction.reply({ content: traducao, ephemeral: true });
         // Responde com a tradução no mesmo canal
         // await reaction.message.channel.send({
         //     content: `${user}, ${reaction.emoji.name}: "${traducao}"`,
