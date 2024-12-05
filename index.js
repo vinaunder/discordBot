@@ -257,30 +257,40 @@ client.on('interactionCreate', async (interaction) => {
 
 // Evento de reação adicionada
 client.on('messageReactionAdd', async (reaction, user) => {
-    if (user.bot) return; // Ignora reações de bots
-
-    // Garante que a mensagem e o canal estão carregados
-    if (!reaction.message.partial) await reaction.message.fetch();
-
-    // Verifica se a reação é uma bandeira
-    const idiomaDestino = idiomas[reaction.emoji.name];
-    if (!idiomaDestino) return; // Se não for uma bandeira, ignora
-
-    // Traduz o conteúdo da mensagem
-    const textoOriginal = reaction.message.content;
-    if (!textoOriginal) return; // Ignora mensagens sem texto
-
     try {
+        if (user.bot) return; // Ignora reações de bots
+
+        // Garante que a mensagem e o canal estão carregados
+        if (reaction.partial) {
+            await reaction.fetch(); // Busca a reação parcial
+        }
+
+        if (reaction.message.partial) {
+            await reaction.message.fetch(); // Busca a mensagem parcial
+        }
+
+        if (reaction.message.channel.partial) {
+            await reaction.message.channel.fetch(); // Busca o canal parcial
+        }
+
+        // Verifica se a reação é uma bandeira
+        const idiomaDestino = idiomas[reaction.emoji.name];
+        if (!idiomaDestino) return; // Ignora reações que não são bandeiras
+
+        // Traduz o conteúdo da mensagem
+        const textoOriginal = reaction.message.content;
+        if (!textoOriginal) return; // Ignora mensagens sem texto
+
         const traducao = await traduzirTexto(textoOriginal, idiomaDestino);
 
-        // Envia a tradução como uma mensagem ephemera (visível apenas para o usuário que reagiu)
+        // Responde com a tradução no mesmo canal
         await reaction.message.channel.send({
-            content: `${reaction.emoji.name}: "${traducao}"`,
-            ephemeral: true, // Tornar visível apenas para o usuário não é suportado diretamente aqui
+            content: `${user}, tradução para ${reaction.emoji.name}: "${traducao}"`,
         });
     } catch (error) {
-        console.error('Erro ao processar a tradução:', error.message);
+        console.error('Erro ao processar a reação:', error);
     }
 });
+
 
 client.login(TOKEN);
