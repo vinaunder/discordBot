@@ -62,6 +62,24 @@ const commands = [
         ],
         default_member_permissions: 0x00000008,
     },
+    {
+        name: 'create_event',
+        description: 'Create a new event.',
+        options: [
+            {
+                name: 'name',
+                type: 3, // STRING
+                description: 'Event Name',
+                required: true,
+            },
+            {
+                name: 'date',
+                type: 3, // STRING
+                description: 'Event Date (ex: 2024-12-25)',
+                required: true,
+            },
+        ],
+    },
 
 ];
 

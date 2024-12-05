@@ -252,6 +252,44 @@ client.on('interactionCreate', async (interaction) => {
             console.error(error);
             await interaction.reply({ content: 'There was an error sending the alert.', ephemeral: true });
         }
+    } else if (commandName === 'create_event') {
+        const requiredRoleName = 'Event Organizer'; // Substitua pelo nome do cargo necessário
+        const memberRoles = interaction.member.roles.cache;
+
+        // Verifica se o usuário possui o cargo necessário
+        const hasRole = memberRoles.some(role => role.name === requiredRoleName);
+
+        if (!hasRole) {
+            return interaction.reply({
+                content: `❌ You do not have permission to create events. This command is reserved for members with the role **${requiredRoleName}**.`,
+                ephemeral: true, // Mensagem visível apenas para o usuário
+            });
+        }
+
+        // Lógica para criar o evento
+        const eventName = interaction.options.getString('name');
+        const eventDate = interaction.options.getString('date');
+
+        if (!eventName || !eventDate) {
+            return interaction.reply({
+                content: '❌ Please provide a name and date for the event.',
+                ephemeral: true,
+            });
+        }
+
+        try {
+            await interaction.reply({
+                content: `✅ Event successfully created!\n**Nome:** ${eventName}\n**Data:** ${eventDate}`,
+            });
+
+            // Adicione aqui a lógica para armazenar ou anunciar o evento no servidor
+        } catch (error) {
+            console.error('Erro ao criar evento:', error);
+            await interaction.reply({
+                content: '❌ An error occurred while creating the event. Please try again later.',
+                ephemeral: true,
+            });
+        }
     }
 });
 
@@ -282,40 +320,19 @@ client.on('messageReactionAdd', async (reaction, user) => {
         if (!textoOriginal) return; // Ignora mensagens sem texto
 
         const traducao = await traduzirTexto(textoOriginal, idiomaDestino);
-        // Responde ao autor do comando informando que foi enviado
-        await reaction.reply({ content: traducao, ephemeral: true });
+        const t = await traduzirTexto("Tradução Para - ", idiomaDestino);
+
         // Responde com a tradução no mesmo canal
-        // await reaction.message.channel.send({
-        //     content: `${user}, ${reaction.emoji.name}: "${traducao}"`,
-        //     allowedMentions: { repliedUser: false },
-        // });
+        await reaction.message.channel.send({
+            content: `${user},${t} ${reaction.emoji.name}: "${traducao}"`,
+            allowedMentions: { repliedUser: false },
+        });
     } catch (error) {
         console.error('Erro ao processar a reação:', error);
     }
 });
 
-client.on('guildMemberAdd', async (member) => {
-    try {
-        // Nome do canal onde a mensagem será enviada
-        const channelName = 'welcome'; // Substitua pelo nome do seu canal de boas-vindas
-        const welcomeChannel = member.guild.channels.cache.find(channel => channel.name === channelName);
 
-        if (!welcomeChannel) {
-            console.error(`Canal "${channelName}" não encontrado.`);
-            return;
-        }
-
-        // Mensagem de boas-vindas
-        const welcomeMessage = `🎉 Hello, ${member}! Welcome to the server **${member.guild.name}**! 
-We hope you have a great experience. Don't forget to check out the server rules! 😊`;
-
-        // Enviar a mensagem no canal
-        await welcomeChannel.send(welcomeMessage);
-        console.log(`Mensagem de boas-vindas enviada para ${member.user.tag}`);
-    } catch (error) {
-        console.error('Erro ao enviar mensagem de boas-vindas:', error);
-    }
-});
 
 
 client.login(TOKEN);
