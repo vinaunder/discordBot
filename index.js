@@ -50,7 +50,7 @@ async function traduzirTexto(texto, idiomaDestino) {
 }
 
 client.once('ready', () => {
-    console.log(`Bot online como ${client.user.tag}`);
+    console.log(`Bot online - ${client.user.tag}`);
 });
 
 client.on('interactionCreate', async (interaction) => {
@@ -285,10 +285,34 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
         // Responde com a tradução no mesmo canal
         await reaction.message.channel.send({
-            content: `${user}, tradução para ${reaction.emoji.name}: "${traducao}"`,
+            content: `${user}, ${reaction.emoji.name}: "${traducao}"`,
+            allowedMentions: { repliedUser: false },
         });
     } catch (error) {
         console.error('Erro ao processar a reação:', error);
+    }
+});
+
+client.on('guildMemberAdd', async (member) => {
+    try {
+        // Nome do canal onde a mensagem será enviada
+        const channelName = 'welcome'; // Substitua pelo nome do seu canal de boas-vindas
+        const welcomeChannel = member.guild.channels.cache.find(channel => channel.name === channelName);
+
+        if (!welcomeChannel) {
+            console.error(`Canal "${channelName}" não encontrado.`);
+            return;
+        }
+
+        // Mensagem de boas-vindas
+        const welcomeMessage = `🎉 Hello, ${member}! Welcome to the server **${member.guild.name}**! 
+We hope you have a great experience. Don't forget to check out the server rules! 😊`;
+
+        // Enviar a mensagem no canal
+        await welcomeChannel.send(welcomeMessage);
+        console.log(`Mensagem de boas-vindas enviada para ${member.user.tag}`);
+    } catch (error) {
+        console.error('Erro ao enviar mensagem de boas-vindas:', error);
     }
 });
 
