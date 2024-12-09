@@ -19,6 +19,8 @@ const TOKEN = process.env.DISCORD_TOKEN;
 // Mapeamento de idiomas e emojis
 const idiomas = {
     "🇺🇸": "en", // Inglês (Estados Unidos)
+    "🇨🇦": "en", // Inglês (Canadá)
+    "🇬🇧": "en", // Inglês (Reino Unido)
     "🇧🇷": "pt", // Português (Brasil)
     "🇫🇷": "fr", // Francês
     "🇪🇸": "es", // Espanhol
