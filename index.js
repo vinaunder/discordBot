@@ -22,6 +22,7 @@ const idiomas = {
     "🇨🇦": "en", // Inglês (Canadá)
     "🇬🇧": "en", // Inglês (Reino Unido)
     "🇮🇪": "en", // Inglês (Irlanda)
+    "🏴󠁧󠁢󠁳󠁣󠁴󠁿": "en",
     "🇧🇷": "pt", // Português (Brasil)
     "🇫🇷": "fr", // Francês
     "🇪🇸": "es", // Espanhol
