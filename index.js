@@ -19,10 +19,9 @@ const TOKEN = process.env.DISCORD_TOKEN;
 // Mapeamento de idiomas e emojis
 const idiomas = {
     "🇺🇸": "en", // Inglês (Estados Unidos)
-    "🇨🇦": "ca", // Inglês (Canadá)
-    "🇬🇧": "gb", // Inglês (Reino Unido)
-    "🇮🇪": "ie", // Inglês (Irlanda)
-    "🇬🇩": "gd", // Escocês
+    "🇨🇦": "en", // Inglês (Canadá)
+    "🇬🇧": "en", // Inglês (Reino Unido)
+    "🇮🇪": "en", // Inglês (Irlanda)
     "🇧🇷": "pt", // Português (Brasil)
     "🇫🇷": "fr", // Francês
     "🇪🇸": "es", // Espanhol
@@ -330,6 +329,8 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
         // Verifica se a reação é uma bandeira
         const idiomaDestino = idiomas[reaction.emoji.name];
+        console.log('react name:', reaction.emoji.name);
+        console.log('idiomaDestino', idiomaDestino);
         if (!idiomaDestino) return; // Ignora reações que não são bandeiras
 
         // Traduz o conteúdo da mensagem
