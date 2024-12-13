@@ -328,24 +328,39 @@ client.on('messageReactionAdd', async (reaction, user) => {
             await reaction.message.channel.fetch(); // Busca o canal parcial
         }
 
-        // Verifica se a reação é uma bandeira
+        // Verifica se a reação é uma bandeira suportada
         const idiomaDestino = idiomas[reaction.emoji.name];
-        console.log('react name:', reaction.emoji.name);
-        console.log('idiomaDestino', idiomaDestino);
-        if (!idiomaDestino) return; // Ignora reações que não são bandeiras
+        console.log('Reação detectada:', reaction.emoji.name);
+        console.log('Idioma de destino:', idiomaDestino);
+        if (!idiomaDestino) return; // Ignora reações que não são bandeiras mapeadas
+
+        // Verifica se a mensagem contém texto ou é um embed
+        let textoOriginal = reaction.message.content;
+        if (!textoOriginal && reaction.message.embeds.length > 0) {
+            // Caso a mensagem seja um embed, concatena os títulos e descrições dos embeds
+            textoOriginal = reaction.message.embeds.map(embed => embed.title + ' ' + embed.description).join('\n');
+        }
+
+        if (!textoOriginal) return; // Ignora mensagens sem conteúdo textual ou embed
 
         // Traduz o conteúdo da mensagem
-        const textoOriginal = reaction.message.content;
-        if (!textoOriginal) return; // Ignora mensagens sem texto
-
         const traducao = await traduzirTexto(textoOriginal, idiomaDestino);
         const t = await traduzirTexto("Tradução Para - ", idiomaDestino);
 
-        // Responde com a tradução no mesmo canal
-        await reaction.message.channel.send({
-            content: `${user},${t} ${reaction.emoji.name}: "${traducao}"`,
-            allowedMentions: { repliedUser: false },
-        });
+        // Envia a tradução via DM para o usuário que reagiu
+        const mensagemDM = `${t} ${reaction.emoji.name}: "${traducao}"`;
+        try {
+            await user.send({ content: mensagemDM });
+            console.log(`Tradução enviada para ${user.tag} (${idiomaDestino})`);
+        } catch (dmError) {
+            console.error(`Não foi possível enviar DM para ${user.tag}.`);
+            // Opcional: Envie uma mensagem no canal informando que a DM falhou
+            await reaction.message.channel.send({
+                content: `${user}, não consegui enviar a tradução por DM. Por favor, verifique se suas DMs estão habilitadas.`,
+                allowedMentions: { users: [user.id] },
+            });
+        }
+
     } catch (error) {
         console.error('Erro ao processar a reação:', error);
     }
